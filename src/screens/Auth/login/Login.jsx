@@ -8,7 +8,7 @@ import axios  from "../../../utils/axiosInstance";
 
 const Login = ({navigation}) => {
     const theme = useTheme();
-    const {user,login} = useAppContext();
+    const {user,login,error,setError} = useAppContext();
     const [email,setEmail]=useState("")
     const [password,setPassword]=useState("")
     const [loading,setLoading] = useState(false);
@@ -34,8 +34,9 @@ const Login = ({navigation}) => {
         setLoading(false);
     } 
     useEffect(()=>{
-        console.log(user)
-    },[user])
+        if(error.error) {ToastAndroid.show(error.message, ToastAndroid.SHORT),setError({ ...error, error: false, message: "" })}
+        
+    },[])
 
     const forgetPasswordHandler = async (email) => {
         try{
@@ -43,7 +44,7 @@ const Login = ({navigation}) => {
         then(res => ToastAndroid.show("email sent", ToastAndroid.SHORT)).
         catch(err => console.log(err))
         }catch(error) {
-            console.log(error)
+            console.log("error")
         }
         setShowModal(false)
     }

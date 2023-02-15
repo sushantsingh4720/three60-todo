@@ -9,6 +9,7 @@ const SingleTodo = ({item,taskChanged,setTaskChanged}) => {
   const [showDescription,setShowDescription] = useState(false);
   const [task,setTask] = useState({title:item.title,description:item.description});
   const [showModal,setShowModal] = useState(false);
+  const [showDeleteModeel,setShowDeleteModeel] = useState(false);
   const {token} = useAppContext();
   const theme = useTheme()
   const styles=StyleSheet.create({
@@ -36,19 +37,23 @@ const SingleTodo = ({item,taskChanged,setTaskChanged}) => {
         'Authorization': `Bearer ${token}`,
         'Content-Type':'application/json'
       }
-    }).then((res) => console.log(res)).catch(err => console.log(err))
-    setTaskChanged(!taskChanged)
-    setShowModal(false)
+    }).then((res) => {
+      setTaskChanged(!taskChanged)
+      setShowModal(false)} )
+      .catch(err => console.log(err))
+   
   }
 
   const deleteTask = async () => {
+    
     await axios.delete(`/todos/delete/${item._id}`,{
       headers:{
         'Authorization': `Bearer ${token}`,
         'Content-Type':'application/json'
       }
-    }).then((res) => console.log(res)).catch(err => console.log(err))
-    setTaskChanged(!taskChanged)
+    }).then((res) =>{setTaskChanged(!taskChanged)
+       setShowDeleteModeel(false)} ).catch(err => console.log(err))
+    
   }
 
   return (
@@ -64,10 +69,26 @@ const SingleTodo = ({item,taskChanged,setTaskChanged}) => {
             {showDescription && 
               <View flexDirection="row" alignItems="center" justifyContent="space-between">
                 <IconButton onPress={() => setShowModal(true)} icon="pencil"/>
-                <IconButton onPress={() => deleteTask()} icon="delete"/>
+                <IconButton onPress={() => setShowDeleteModeel(true)} icon="delete"/>
               </View>
             }
     </Pressable>
+    <Portal>
+      <Modal visible={showDeleteModeel} onDismiss={()=>setShowDeleteModeel(false)}>
+        <View style={{width:"70%",padding:16,backgroundColor:"white",borderRadius:8,alignSelf:'center'}}>
+          <Text style={{fontSize:18}}>Are you sure you want to delete this task</Text>
+          <View style={{marginTop:32, flexDirection:"row" ,justifyContent:"space-between" }}>
+          <Button 
+            onPress={() => setShowDeleteModeel(false)}
+            style={{width:"40%",alignSelf:'center',borderRadius:4}} mode='contained'>No</Button>
+          <Button 
+            onPress={() => deleteTask()}
+            style={{width:"40%",alignSelf:'center',borderRadius:4}} mode='contained'>yes</Button>
+            </View>
+        </View>
+
+      </Modal>
+    </Portal>
     <Portal>
       <Modal visible={showModal} onDismiss={() => setShowModal(false)}>
       <View style={{width:"70%",padding:16,backgroundColor:"white",borderRadius:8,alignSelf:'center'}}>

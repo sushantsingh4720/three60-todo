@@ -6,6 +6,7 @@ const AppContext = createContext();
 
 const AppProvider = ({ children }) => {
   const [token, setToken] = useState(null);
+  const [error, setError] = useState({ error: false, message: "" });
 
   const storeData = async (token) => {
     try {
@@ -36,7 +37,10 @@ const AppProvider = ({ children }) => {
           setToken(res.data.token);
         })
         .catch((err) => {
-          console.log(err.response.data);
+          setError({
+            error: err.response.data.error,
+            message: err.response.data.message,
+          });
         });
     } catch (err) {
       console.log(err);
@@ -52,7 +56,12 @@ const AppProvider = ({ children }) => {
           storeData(res.data.token);
           setToken(res.data.token);
         })
-        .catch((err) => console.log("error signing up", err.response.data));
+        .catch((err) =>
+          setError({
+            error: err.response.data.error,
+            message: err.response.data.message,
+          })
+        );
     } catch (error) {
       console.log(error);
     }
@@ -61,10 +70,13 @@ const AppProvider = ({ children }) => {
   const logout = () => {
     removeData();
     setToken(null);
+    console.log("hii  " + token);
   };
 
   return (
-    <AppContext.Provider value={{ login, token, setToken, logout, signUp }}>
+    <AppContext.Provider
+      value={{ login, token, setToken, logout, signUp, error, setError }}
+    >
       {children}
     </AppContext.Provider>
   );

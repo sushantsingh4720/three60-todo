@@ -1,13 +1,13 @@
-import {  Image, View } from "react-native"
+import {  Image, View ,ToastAndroid} from "react-native"
 import { Text, TextInput, Button,useTheme } from "react-native-paper";
 import { StyleSheet } from "react-native";
 import userLogo from "../../../../assets/userLogo.jpg"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAppContext } from "../../../context/AppContext";
 
 const SignUp = ({navigation}) => {
     const theme = useTheme()
-    const {signUp} = useAppContext()
+    const {signUp,error,setError} = useAppContext()
     const [user,setUser] = useState({name:"",email:"",password:""});
     const styles = StyleSheet.create({
         card:{
@@ -22,7 +22,9 @@ const SignUp = ({navigation}) => {
             backgroundColor:"#ffffff"
         }
     })
-
+useEffect(()=>{
+    if(error.error) {ToastAndroid.show(error.message, ToastAndroid.SHORT),setError({ ...error, error: false, message: "" })}
+},[])
 
     return <View style={styles.container}>
         <View style={styles.card}>

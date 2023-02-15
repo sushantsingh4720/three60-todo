@@ -9,6 +9,7 @@ const AppStack = () => {
     const prepare = async () => {
       try {
         const value = await AsyncStorage.getItem('token');
+        console.log("value  "+value)
         if (value !== null) {
           setToken(value);
         }

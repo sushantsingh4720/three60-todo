@@ -20,7 +20,7 @@ const Home = () => {
     })
     .then(res => {
       setTodos(res.data.todos)
-      console.log(res.data.todos)
+      // console.log(res.data.todos)
     }
       )
     .catch(err => 
